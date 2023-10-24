@@ -4,6 +4,8 @@
     --blue: #233e6a;
     --soft-gray: #4e4e4e;
     --light-gray: #666666;
+    --purple: #703687;
+    --dark-purple: #311c64;
 }
 
 .bg-gray { background-color: var(--gray); }
@@ -17,3 +19,16 @@
 .text-blue { color: var(--blue); }
 .text-soft-gray { color: var(--soft-gray); }
 .text-light-gray { color: var(--light-gray); }
+
+.pill {
+    border-radius: 16px;
+}
+.link:hover, .link.active{
+    background: linear-gradient(to right, var(--purple), var(--dark-purple));
+    color: white;
+}
+
+.line {
+    width: 3px;
+    background-color: white;
+}
