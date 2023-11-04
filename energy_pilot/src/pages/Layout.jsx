@@ -14,8 +14,8 @@ export default function Layout({}) {
     const location = useLocation();
 
     return (
-        <div className="flex h-full w-full">
-            <aside className="w-2/12 sticky left-0 top-0 bg-black p-4">
+        <div className="flex h-full w-full overflow-y-scroll">
+            <aside className="hidden md:block md:w-3/12 lg:w-2/12 sticky left-0 top-0 bg-black p-4 h-full">
                 <img src="https://res.cloudinary.com/dimcnbuqs/image/upload/v1698076820/imagen_2023-10-23_104415465-PhotoRoom.png-PhotoRoom_o8m6rt.png" alt="" className="mb-20 mt-5"/>
                 <nav><ul>
                     <li><Link to={'/'}><LinkButton active={location.pathname === '/'} img={homeSvg}>
@@ -41,7 +41,7 @@ export default function Layout({}) {
                     </LinkButton></Link></li>
                 </ul></nav>
             </aside>
-            <main className="w-full p-4">
+            <main className="w-full md:w-9/12 lg:w-10/12 p-4">
                 <Outlet/>
             </main>
         </div>

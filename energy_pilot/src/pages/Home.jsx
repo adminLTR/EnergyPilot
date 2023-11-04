@@ -2,16 +2,18 @@ import{ useState, useEffect } from "react";
 
 import Gadget from "../components/Gadget";
 import LineChart from "../components/LineChart";
+import DoughnutChart from "../components/DoughnutChart";
 import { getData } from "../data/fakeApi";
 
 export default function Home({}) {
 
-    const [data, setData] = useState({})
+    const [dataLine, setDataLine] = useState({});
+    const [dataDoughnut, setDataDoughnut] = useState({});
 
     useEffect(() => {
       const api = async () => {
         const x = (await getData()).data;
-        setData({
+        setDataLine({
           labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
           datasets: [{
             label: "Estadísticas de consumo semanal",
@@ -21,16 +23,46 @@ export default function Home({}) {
             borderRadius: true,
           }]
         })
+        const total = x[0].kwh_1 + x[0].kwh_2 + x[0].kwh_3 + x[0].kwh_4 + x[0].kwh_5 + x[0].kwh_6 + x[0].kwh_7;
+        const suma1 = total*0.3979;
+        const suma2 = total*0.1059;
+        const suma3 = total*0.0747;
+        const suma4 = total*0.1118;
+        const suma5 = total*0.2185;
+        const suma6 = total*0.0908;
+        setDataDoughnut({
+          labels: ['Aire acondicionado','Refrigeradora','Lavadora','Televisores','Cámaras de seguridad','Luces LED'],
+          datasets: [{
+            data: [suma1, suma2, suma3, suma4, suma5, suma6],
+            borderRadius: 5,
+            cutout: 90,
+            backgroundColor: [
+              'rgb(255, 55, 55)', // Rojo vivo intenso
+              'rgb(255, 204, 0)', // Amarillo anaranjado vivo
+              'rgb(0, 204, 102)', // Verde intenso
+              'rgb(51, 102, 255)', // Azul intenso
+              'rgb(255, 51, 204)', // Rosa vivo intenso
+              'rgb(153, 51, 255)' // Púrpura vivo intenso
+            ]      
+            ,      
+            hoverOffset: 4,
+            spacing: 8,
+            borderColor:[
+              'rgb(23, 23, 23)'
+            ],
+          }]
+        },)
       }
-      console.log(data);
       api();
-    }, [])
+    }, []);
 
     return (
-        <div className="w-full flex justify-between gap-4">
-            <div className="flex-1">
-                <div className="w-full rounded bg-dark-gray p-4 mb-4">
-                  {Object.keys(data).length > 0 && <LineChart chartData={data} />}
+        <div className="w-full block lg:flex justify-between gap-4">
+            <div className="w-full lg:w-9/12">
+                <div className="w-full center rounded bg-dark-gray p-4 mb-4">
+                  <div className="w-full md:w-10/12 lg:w-9/12">
+                    {Object.keys(dataLine).length > 0 && <LineChart chartData={dataLine}/>}
+                  </div>
                 </div>
                 <div className="w-full rounded bg-dark-gray p-4 mb-4">
                     <Gadget title={"Consumo habitual"} number={"49,82"} units={true}>
@@ -47,10 +79,13 @@ export default function Home({}) {
                     </Gadget>
                 </div>            
             </div>
-            <div className="rounded bg-dark-gray flex justify-between p-4">
-                <h2 className="text-white font-bold">
+            <div className="w-full lg:w-3/12 rounded bg-dark-gray flex flex-col p-4">
+                <h2 className="text-white font-bold text-center mb-5">
                 Información del Consumo semanal
                 </h2>
+                <div className="w-full center">
+                {Object.keys(dataLine).length > 0 && <DoughnutChart chartData={dataDoughnut}/>}
+                </div>
             </div>   
         </div>
     )

@@ -4,7 +4,9 @@ import { RouterProvider } from "react-router-dom";
 
 import router from './router.jsx';
 
-import './index.css'
+import './index.css';
+import "./css/root.css";
+
 // npm install
 // npm run dev
 ReactDOM.createRoot(document.getElementById('root')).render(
