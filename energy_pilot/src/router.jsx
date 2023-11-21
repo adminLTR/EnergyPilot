@@ -17,7 +17,7 @@ const router = createBrowserRouter([
                 element: <h2>xddd</h2>
             },
             {
-                path: 'dispositivos/',
+                path: 'devices/',
                 element: <h2>Dispositivos</h2>
             },
         ]
