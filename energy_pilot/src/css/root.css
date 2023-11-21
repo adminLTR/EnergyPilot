@@ -6,13 +6,16 @@
     --light-gray: #666666;
     --purple: #703687;
     --dark-purple: #311c64;
+    --gray2: #2a2929;
 }
 
 .bg-gray { background-color: var(--gray); }
+.bg-gray2 { background-color: var(--gray2); }
 .bg-dark-gray { background-color: var(--dark-gray); }
 .bg-blue { background-color: var(--blue); }
 .bg-soft-gray { background-color: var(--soft-gray); }
 .bg-light-gray { background-color: var(--light-gray); }
+.bg-purple { background-color: var(--purple); }
 
 .text-gray { color: var(--gray); }
 .text-dark-gray { color: var(--dark-gray); }
@@ -22,6 +25,18 @@
 
 .pill {
     border-radius: 16px;
+}
+.circle {
+    border-radius: 50%;
+}
+.btn-circle {
+    border-radius: 50%;
+    padding: .5rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .link:hover, .link.active{
     background: linear-gradient(to right, var(--purple), var(--dark-purple));
@@ -37,4 +52,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.btn-purple {
+    background-color: var(--purple);
+    cursor: pointer;
+    color: white;
+    transition: all ease-in-out .2s;
+}
+.btn-purple:hover {
+    background-color: var(--dark-purple);
 }
