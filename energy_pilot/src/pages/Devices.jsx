@@ -29,7 +29,7 @@ export default function Devices() {
             setDevicesOrder(x);
             console.log(devicesOrder)
         }
-    }, [devices])
+    }, [devices]);
 
     return (
         <div className="p-4">

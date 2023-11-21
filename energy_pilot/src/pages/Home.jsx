@@ -5,14 +5,64 @@ import LineChart from "../components/LineChart";
 import DoughnutChart from "../components/DoughnutChart";
 import { getData } from "../data/fakeApi";
 
+import { getDevices } from "../data/api";
+
+import { getSumDevices, sum } from "../helpers/helpers";
+
 export default function Home({}) {
 
     const [dataLine, setDataLine] = useState({});
     const [dataDoughnut, setDataDoughnut] = useState({});
 
+    const [devices, setDevices] = useState([]);
+    const [devicesOrder, setDevicesOrder] = useState({});
+
+    const [weekData, setWeekData] = useState([]);
+
+    useEffect(()=>{
+        const data = async ()=> {
+            const x = (await getDevices()).data
+            setDevices(x);
+        }
+        data();
+    }, []);
+
     useEffect(() => {
-      const api = async () => {
-        const x = (await getData()).data;
+        const x = {}
+        if (devices) {
+            for (let i = 0; i < devices.length; i++) {
+                if (x[devices[i].type]) {
+                    x[devices[i].type].push(devices[i]);
+                } else {
+                    x[devices[i].type] = [devices[i]];
+                }
+            }
+            setDevicesOrder(x);
+        }
+    }, [devices]);
+    
+    useEffect(() => {
+      setDataDoughnut({
+        labels: Object.keys(devicesOrder),
+        datasets: [{
+          data: getSumDevices(devicesOrder),
+          borderRadius: 5,
+          cutout: 90,
+          backgroundColor: Object.keys(devicesOrder).map(key => {
+            return `rgb(${Math.random()*(226)}, ${Math.random()*(226)}, ${Math.random()*(226)})`
+          })    
+          ,      
+          hoverOffset: 4,
+          spacing: 8,
+          borderColor:[
+            'rgb(23, 23, 23)'
+          ],
+        }]
+      })
+    }, [devicesOrder]);
+
+    useEffect(() => {
+        const x = getData();
         setDataLine({
           labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
           datasets: [{
@@ -23,38 +73,7 @@ export default function Home({}) {
             borderRadius: true,
           }]
         })
-        const total = x[0].kwh_1 + x[0].kwh_2 + x[0].kwh_3 + x[0].kwh_4 + x[0].kwh_5 + x[0].kwh_6 + x[0].kwh_7;
-        const suma1 = total*0.3979;
-        const suma2 = total*0.1059;
-        const suma3 = total*0.0747;
-        const suma4 = total*0.1118;
-        const suma5 = total*0.2185;
-        const suma6 = total*0.0908;
-        setDataDoughnut({
-          labels: ['Aire acondicionado','Refrigeradora','Lavadora','Televisores','Cámaras de seguridad','Luces LED'],
-          datasets: [{
-            data: [suma1, suma2, suma3, suma4, suma5, suma6],
-            borderRadius: 5,
-            cutout: 90,
-            backgroundColor: [
-              'rgb(255, 55, 55)', // Rojo vivo intenso
-              'rgb(255, 204, 0)', // Amarillo anaranjado vivo
-              'rgb(0, 204, 102)', // Verde intenso
-              'rgb(51, 102, 255)', // Azul intenso
-              'rgb(255, 51, 204)', // Rosa vivo intenso
-              'rgb(153, 51, 255)' // Púrpura vivo intenso
-            ]      
-            ,      
-            hoverOffset: 4,
-            spacing: 8,
-            borderColor:[
-              'rgb(23, 23, 23)'
-            ],
-          }]
-        },)
-      }
-      api();
-    }, []);
+    }, [devicesOrder]);
 
     return (
         <div className="w-full block lg:flex justify-between gap-4">
