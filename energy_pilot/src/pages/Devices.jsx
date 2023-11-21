@@ -1,6 +1,36 @@
+import { useState, useEffect } from "react";
+
+import { getDevices } from "../data/api";
+
 import DeviceContainer from "../components/DeviceContainer";
 
 export default function Devices() {
+    const [devices, setDevices] = useState([]);
+    const [devicesOrder, setDevicesOrder] = useState({});
+
+    useEffect(()=>{
+        const data = async ()=> {
+            const x = (await getDevices()).data
+            setDevices(x);
+        }
+        data();
+    }, []);
+
+    useEffect(() => {
+        const x = {}
+        if (devices) {
+            for (let i = 0; i < devices.length; i++) {
+                if (x[devices[i].type]) {
+                    x[devices[i].type].push(devices[i]);
+                } else {
+                    x[devices[i].type] = [devices[i]];
+                }
+            }
+            setDevicesOrder(x);
+            console.log(devicesOrder)
+        }
+    }, [devices])
+
     return (
         <div className="p-4">
             <div className="flex justify-between">
@@ -10,9 +40,9 @@ export default function Devices() {
             </div>
             <div className="my-2">
                 <div className="w-full md:w-1/2 lg:w-8/12">
-                    <DeviceContainer title={"Televisores"}/>
-                    <DeviceContainer title={"Ventiladores"}/>
-                    <DeviceContainer title={"Luces"}/>
+                    {Object.keys(devicesOrder).map((key)=>{
+                        return <DeviceContainer key={key} title={key} devices={devicesOrder[key]}/>
+                    })}
                 </div>
             </div>
         </div>
