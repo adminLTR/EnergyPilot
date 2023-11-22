@@ -17,7 +17,8 @@ export default function Home({}) {
     const [devices, setDevices] = useState([]);
     const [devicesOrder, setDevicesOrder] = useState({});
 
-    const [weekData, setWeekData] = useState([]);
+    const [colors, setColors] = useState([]);
+    const [devicesKey, setDevicesKey] = useState([]);
 
     useEffect(()=>{
         const data = async ()=> {
@@ -39,18 +40,21 @@ export default function Home({}) {
             }
             setDevicesOrder(x);
         }
+        
     }, [devices]);
     
     useEffect(() => {
+      setColors(Object.keys(devicesOrder).map(key => {
+        return `rgb(${Math.random()*(226)}, ${Math.random()*(226)}, ${Math.random()*(226)})`
+      }));
+      setDevicesKey(Object.keys(devicesOrder));
       setDataDoughnut({
-        labels: Object.keys(devicesOrder),
+        labels: devicesKey,
         datasets: [{
           data: getSumDevices(devicesOrder),
           borderRadius: 5,
-          cutout: 90,
-          backgroundColor: Object.keys(devicesOrder).map(key => {
-            return `rgb(${Math.random()*(226)}, ${Math.random()*(226)}, ${Math.random()*(226)})`
-          })    
+          cutout: 130,
+          backgroundColor: colors
           ,      
           hoverOffset: 4,
           spacing: 8,
@@ -62,17 +66,20 @@ export default function Home({}) {
     }, [devicesOrder]);
 
     useEffect(() => {
-        const x = getData();
-        setDataLine({
-          labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-          datasets: [{
-            label: "Estadísticas de consumo semanal",
-            data: [x[0].kwh_1, x[0].kwh_2, x[0].kwh_3, x[0].kwh_4, x[0].kwh_5, x[0].kwh_6, x[0].kwh_7],
-            borderWidth: 4.9,
-            borderColor: 'rgba(80, 10, 163, 0.8)',
-            borderRadius: true,
-          }]
-        })
+        const d = async () => {
+          const x = (await getData()).data;
+          setDataLine({
+            labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+            datasets: [{
+              label: "Estadísticas de consumo semanal",
+              data: [x[0].kwh_1, x[0].kwh_2, x[0].kwh_3, x[0].kwh_4, x[0].kwh_5, x[0].kwh_6, x[0].kwh_7],
+              borderWidth: 4.9,
+              borderColor: 'rgba(80, 10, 163, 0.8)',
+              borderRadius: true,
+            }]
+          })
+        }
+        d();
     }, [devicesOrder]);
 
     return (
@@ -103,7 +110,7 @@ export default function Home({}) {
                 Información del Consumo semanal
                 </h2>
                 <div className="w-full center">
-                {Object.keys(dataLine).length > 0 && <DoughnutChart chartData={dataDoughnut}/>}
+                {Object.keys(dataLine).length > 0 && <DoughnutChart chartData={dataDoughnut} devicesKey={devicesKey} colors={colors}/>}
                 </div>
             </div>   
         </div>

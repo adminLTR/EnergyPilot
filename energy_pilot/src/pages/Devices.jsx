@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 
 import { getDevices } from "../data/api";
-
+import LineChart from "../components/LineChart";
+import { getData } from "../data/fakeApi";
 import DeviceContainer from "../components/DeviceContainer";
 
 export default function Devices() {
     const [devices, setDevices] = useState([]);
     const [devicesOrder, setDevicesOrder] = useState({});
+
+    const [dataLine, setDataLine] = useState({});
 
     useEffect(()=>{
         const data = async ()=> {
@@ -27,9 +30,25 @@ export default function Devices() {
                 }
             }
             setDevicesOrder(x);
-            console.log(devicesOrder)
         }
     }, [devices]);
+
+    useEffect(() => {
+        const d = async () => {
+          const x = (await getData()).data;
+        setDataLine({
+            labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+            datasets: [{
+            label: "Estadísticas de consumo semanal",
+            data: [x[0].kwh_1, x[0].kwh_2, x[0].kwh_3, x[0].kwh_4, x[0].kwh_5, x[0].kwh_6, x[0].kwh_7],
+            borderWidth: 4.9,
+            borderColor: 'rgba(80, 10, 163, 0.8)',
+            borderRadius: true,
+            }]
+        })
+        }
+        d();
+    }, [devicesOrder]);
 
     return (
         <div className="p-4">
@@ -39,11 +58,16 @@ export default function Devices() {
                 placeholder="Registre un tipo de dispositivo "/>
             </div>
             <div className="my-2">
-                <div className="w-full md:w-1/2 lg:w-8/12">
                     {Object.keys(devicesOrder).map((key)=>{
-                        return <DeviceContainer key={key} title={key} devices={devicesOrder[key]}/>
+                    return <div key={key}  className="w-full flex items-center">
+                        <div className="w-full md:w-1/2 lg:w-8/12">
+                            <DeviceContainer title={key} devices={devicesOrder[key]}/>
+                        </div>
+                        <div className="w-full md:w-1/2 lg:w-4/12 p-2">
+                            {Object.keys(dataLine).length > 0 && <LineChart chartData={dataLine}/>}
+                        </div>
+                    </div>
                     })}
-                </div>
             </div>
         </div>
     );
